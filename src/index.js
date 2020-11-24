@@ -1,7 +1,16 @@
 import Router from './router/index.js';
 import tooltip from './components/tooltip/index.js';
 
+const initSidebarToggle = () => {
+  const sidebarToggle = document.querySelector('.sidebar__toggler');
+
+  sidebarToggle.addEventListener('click', () => {
+    document.body.classList.toggle('is-collapsed-sidebar');
+  });
+};
+
 tooltip.initialize();
+initSidebarToggle();
 
 const router = Router.instance();
 

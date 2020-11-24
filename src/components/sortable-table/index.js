@@ -99,11 +99,14 @@ export default class SortableTable {
     this.initEventListeners();
   }
 
-  async loadData(id, order, start = this.start, end = this.end) {
+  async loadData(id, order = 'asc', start = this.start, end = this.end, params = {}) {
+    this.url.searchParams.set('_embed', 'subcategory');
     this.url.searchParams.set('_sort', id);
     this.url.searchParams.set('_order', order);
     this.url.searchParams.set('_start', start);
     this.url.searchParams.set('_end', end);
+
+    this.setGETParams(params);
 
     this.element.classList.add('sortable-table_loading');
 
@@ -112,6 +115,12 @@ export default class SortableTable {
     this.element.classList.remove('sortable-table_loading');
 
     return data;
+  }
+
+  setGETParams(params) {
+    Object.entries(params).forEach(([key, value]) => {
+      this.url.searchParams.set(`${key}`, value);
+    });
   }
 
   addRows(data) {
@@ -165,7 +174,7 @@ export default class SortableTable {
 
   getTableRows(data) {
     return data.map(item => `
-      <div class="sortable-table__row">
+      <div class="sortable-table__row" data-id="${item.id}">
         ${this.getTableRow(item, data)}
       </div>`
     ).join('');
@@ -211,10 +220,10 @@ export default class SortableTable {
     this.subElements.body.innerHTML = this.getTableRows(sortedData);
   }
 
-  async sortOnServer(id, order) {
+  async sortOnServer(id, order, params) {
     const start = 1;
     const end = start + this.step;
-    const data = await this.loadData(id, order, start, end);
+    const data = await this.loadData(id, order, start, end, params);
 
     this.renderRows(data);
   }

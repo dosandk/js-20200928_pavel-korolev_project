@@ -143,6 +143,16 @@ export default class Page {
       this.updateChartsComponents(from, to);
       this.updateTableComponent(from, to);
     });
+
+    this.subElements.sortableTable.addEventListener('click', e => {
+      const el = e.target.closest('.sortable-table__row');
+
+      if (el && el.dataset.id) {
+        const link = document.createElement('a');
+        link.href = `/products/${el.dataset.id}`;
+        link.click();
+      }
+    });
   }
 
   destroy () {
